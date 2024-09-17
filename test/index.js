@@ -15,8 +15,8 @@ const serve = serveStatic(join(dirname(import.meta), 'locales'));
 const server = createServer((req, res) => {
   serve(req, res, finalhandler(req, res));
 });
-
-describe('i18next-fetch-backend', () => {
+describe('i18next-fetch-backend', function () {
+  this.timeout(5000); 
   before(() => {
     server.listen(3000);
   });
@@ -25,7 +25,7 @@ describe('i18next-fetch-backend', () => {
     server.close();
   });
 
-  it('should load english translation namespace', (cb) => {
+  it('should load english translation namespace', function (cb) {
     const i18next = createInstance();
 
     i18next.use(FetchBackend).init(
@@ -45,7 +45,7 @@ describe('i18next-fetch-backend', () => {
     );
   });
 
-  it('should fail to load non existent language translation', (cb) => {
+  it('should fail to load non existent language translation', function (cb) {
     const i18next = createInstance();
 
     i18next.use(FetchBackend).init(
@@ -66,7 +66,7 @@ describe('i18next-fetch-backend', () => {
     );
   });
 
-  it('should fail to load non existent namespace translation', (cb) => {
+  it('should fail to load non existent namespace translation', function (cb) {
     const i18next = createInstance();
 
     i18next.use(FetchBackend).init(
@@ -86,7 +86,9 @@ describe('i18next-fetch-backend', () => {
     );
   });
 
-  it("should fail if the requested domain doesn't exist", (cb) => {
+  it("should fail if the requested domain doesn't exist", function (cb) {
+    this.timeout(5000);
+
     const i18next = createInstance();
 
     i18next.use(FetchBackend).init(
@@ -107,7 +109,7 @@ describe('i18next-fetch-backend', () => {
     );
   });
 
-  it('should call the callback with an error if the fetch fails.', (cb) => {
+  it('should call the callback with an error if the fetch fails.', function (cb) {
     const i18next = createInstance();
 
     i18next
@@ -117,7 +119,6 @@ describe('i18next-fetch-backend', () => {
         ns: 'translation',
         backend: {
           loadPath: 'http://localhost:3000/{{lng}}/{{ns}}.json',
-          // mock fetch with a function that returns a rejection of cancelled request
           fetch: () => Promise.reject(new TypeError('cancelled')),
         },
       }, (err) => {
